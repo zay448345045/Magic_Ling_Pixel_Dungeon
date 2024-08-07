@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
+//apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.firebase.crashlytics'
 
 android {
 
@@ -34,10 +34,10 @@ android {
             dependencies {
                 releaseImplementation project(':services:news:shatteredNews')
             }
-            shrinkResources true
-            minifyEnabled true
-            firebaseCrashlytics {mappingFileUploadEnabled false}
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+     //       shrinkResources true
+   //         minifyEnabled true
+ //           firebaseCrashlytics {mappingFileUploadEnabled false}
+ //           proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         release {
 
@@ -45,9 +45,9 @@ android {
             //This makes release APKs smaller and more efficient, but also makes debugging trickier
             //as the information produced in stack traces must be de-obfuscated.
             //See here: https://developer.android.com/studio/build/shrink-code#decode-stack-trace
-            shrinkResources true
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    //        shrinkResources true
+   //         minifyEnabled true
+  //          proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             dependencies {
                 releaseImplementation project(':services:news:shatteredNews')
@@ -69,11 +69,11 @@ dependencies {
 
     // Import the Firebase BoM
 
-    implementation platform('com.google.firebase:firebase-bom:32.7.4')
+//    implementation platform('com.google.firebase:firebase-bom:32.7.4')
     // Declare the dependencies for the Crashlytics and Analytics libraries
     // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation 'com.google.firebase:firebase-crashlytics'
-    implementation 'com.google.firebase:firebase-analytics'
+//    implementation 'com.google.firebase:firebase-crashlytics'
+//    implementation 'com.google.firebase:firebase-analytics'
 
     // Add the dependencies for any other desired Firebase products
     // https://firebase.google.com/docs/android/setup#available-libraries
