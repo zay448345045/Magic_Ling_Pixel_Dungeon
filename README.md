@@ -5,6 +5,8 @@
 If you want to develop, you have to contact me by sending me an email clingsd@gmail.com, or remove the Google service dependency package.  
 If you don't, you won't be able to compile the APK and Desktop won't be affected.  
 
+[![Star History Chart](https://api.star-history.com/svg?repos=LingASDJ/Magic_Ling_Pixel_Dungeon&type=Timeline)](https://star-history.com/#LingASDJ/Magic_Ling_Pixel_Dungeon&Timeline)
+
 <div align="left"> 
 
 [![](https://img.shields.io/badge/join-QQ%20group-brightgreen?style=for-the-badge&logo=tencentqq)](https://jq.qq.com/?_wv=1027&k=R7ZXeEQM)
