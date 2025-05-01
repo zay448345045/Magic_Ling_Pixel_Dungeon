@@ -3,3 +3,6 @@
 
     <style name="DungeonTheme" parent="Theme.Material3.DayNight.NoActionBar" />
 </resources>
+
+<-- item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+        </style> --> 
