@@ -28,7 +28,7 @@ public class Gregorian {
      *   <br>
      *  Gradle Config:<br>
      *  build.gradle (Module:core) <br>
-     *  implementation 'cn.6tail:lunar:1.7.4'<br>
+     *  implementation 'cn.6tail:lunar:1.3.6'<br>
      *  <P></P>
      *  <a href="https://mvnrepository.com/artifact/cn.6tail/lunar">Lunar Maven</a><br>
      *  <a href="https://github.com/6tail/lunar-java/releases">Lunar Release</a><br>
@@ -52,8 +52,6 @@ public class Gregorian {
         boolean isSF = lunar.getMonth() == 1 && (lunar.getDay() >= 1 && lunar.getDay() <= 1 + 13);
 
         boolean isYXJ= lunar.getMonth() == 1 && (lunar.getDay() >= 15 && lunar.getDay() <= 15 + 7);
-        boolean isDWJ2025 = lunar.getMonth() == 4 && lunar.getDay() >= 6 && lunar.getDay() <= 24;
-        boolean isZQJ2025 = lunar.getMonth() == 4 && lunar.getDay() >= 6 && lunar.getDay() <= 24;
 
 
         if(isYXJ){
@@ -65,7 +63,7 @@ public class Gregorian {
         }
 
         // 判断是否是中秋节前10天到中秋节后12天
-        if (isZQJ  || isZQJ2025) {
+        if (isZQJ) {
             holiday = RegularLevel.Holiday.ZQJ;
         }
         // 判断是否是开发组的开发者Ling的当天生日到后续三天-8-22--8.25
@@ -77,7 +75,7 @@ public class Gregorian {
             holiday = RegularLevel.Holiday.DWJ;
         }
 
-        if (isDWJ_2024TWO || isDWJ2025) {
+        if (isDWJ_2024TWO) {
             altHoliday = RegularLevel.AltHoliday.DWJ_2024;
         }
 

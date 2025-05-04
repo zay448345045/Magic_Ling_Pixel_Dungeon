@@ -859,7 +859,7 @@ public class ItemSpriteSheet {
     public static final int  DRAGONHEART= 	LENGYWEAPONS+14;
 
     static {
-        assignItemRect(DIEDCROSSBOW, 16, 16);
+        assignItemRect(DIEDCROSSBOW, 16, 15);
         assignItemRect(FIVEREN, 16, 13);
         assignItemRect(SHADOWMEAT,15,11);
     }
@@ -930,8 +930,6 @@ public class ItemSpriteSheet {
     public static final int	SKPOTION				= BAGS+57;
     public static final int	SKNANO				= BAGS+58;
 
-    public static final int	PROB				= BAGS+59;
-
     public static final int	WRALIPS				= BAGS+60;
 
     public static final int	DM100RELEY				= BAGS+63;
@@ -960,7 +958,6 @@ public class ItemSpriteSheet {
         assignItemRect(LANTERNB, 10, 16);
         assignItemRect(SKPOTION, 13, 15);
         assignItemRect(SKNANO, 15, 14);
-        assignItemRect(PROB, 12, 11);
         assignItemRect(WRALIPS, 14, 12);
         assignItemRect(SDBlade, 15, 15);
     }
