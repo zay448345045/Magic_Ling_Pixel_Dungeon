@@ -140,7 +140,7 @@ public class MobSpawner extends Actor {
 					}
 				case 5:
 					if(Dungeon.depth == 17){
-						return new ArrayList<>(Arrays.asList(BlueWraith.class));
+						return new ArrayList<>(Arrays.asList(BlueWraith.class,TormentedSpirit.class));
 					}
 
 			}
@@ -301,7 +301,6 @@ public class MobSpawner extends Actor {
 
 					case 30:
 						return new ArrayList<>(Arrays.asList(
-								ApprenticeWitch.class,
 								ApprenticeWitch.class,
 								Butcher.class,Butcher.class,
 								Pumking_Ghost.class
@@ -467,13 +466,12 @@ public class MobSpawner extends Actor {
 					case 30:
 						return new ArrayList<>(Arrays.asList(
 								ApprenticeWitch.class,
-								ApprenticeWitch.class,
 								Butcher.class,Butcher.class,
 								Pumking_Ghost.class
 								, PumkingBomber.class
 						));
 
-					case 32: case 34: case 36: case 38:
+					case 32: case 34: case 36: case 37:case 38:
 						//普通结局
 					case 40: case 41:
 						if(Statistics.bossRushMode){
@@ -532,7 +530,7 @@ public class MobSpawner extends Actor {
 					}
 				case 5:
 					if(Dungeon.depth == 17){
-						return new ArrayList<>(Arrays.asList(BlueWraith.class));
+							return new ArrayList<>(Arrays.asList(BlueWraith.class,TormentedSpirit.class));
 					}
 
 			}
@@ -654,11 +652,11 @@ public class MobSpawner extends Actor {
 
 			case 28:
 				return new ArrayList<>(Arrays.asList(
-						ApprenticeWitch.class, Crumb.class, ApprenticeWitch.class));
+						ApprenticeWitch.class, Crumb.class));
 
 			case 29:
 				return new ArrayList<>(Arrays.asList(
-						ApprenticeWitch.class, Ghost_Halloween.class, PumkingBomber.class, ApprenticeWitch.class));
+						Ghost_Halloween.class, PumkingBomber.class, ApprenticeWitch.class));
 
 			default:
 				return new ArrayList<>(Arrays.asList(FlowerSlime.class, FlowerSlime.class,

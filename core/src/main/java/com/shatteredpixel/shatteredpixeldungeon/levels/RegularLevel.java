@@ -76,6 +76,10 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.DragonCaveRoo
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.FayiNaRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.AutoShopRoom;
+
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.BlueAltStoneRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.BoilerRoom;
+
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.GoldRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.HealWellRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.IdenityRoom;
@@ -90,6 +94,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.RandomRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.AquariumRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BigEyeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BloodCrystalRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.DreamcatcherRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
@@ -288,8 +293,12 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
+		if(Dungeon.depth == 24 && branch == 0) {
+			initRooms.add(new BoilerRoom());
+		}
+
 		//20%
-		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) <= 40 || depth == 28 && !Statistics.bossRushMode) {
+		if (Dungeon.NxhyshopOnLevel() && branch == 0 && Random.Int(0,100) <= 40 || depth == 27 && !Statistics.bossRushMode) {
 			initRooms.add(new NxhyShopRoom());
 		}
 
@@ -334,6 +343,13 @@ public abstract class RegularLevel extends Level {
 				initRooms.add(new AutoShopRoom());
 				Buff.affect(hero, AutoRandomBuff.class).set((10), 1);
 			}
+		}
+
+
+		if(Dungeon.depth<26 && Random.Int(10) == 1) {
+			initRooms.add(new EyeRoom());
+		} else if(Random.Int(10) == 1) {
+			initRooms.add(new BigEyeRoom());
 		}
 
 

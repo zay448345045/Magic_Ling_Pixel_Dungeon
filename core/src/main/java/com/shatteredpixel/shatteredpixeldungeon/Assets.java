@@ -85,6 +85,9 @@ public class Assets {
 		public static final String TILES_COLDCHEST  = "environment/tiles_coldchest.png";
 		public static final String TILES_FIRE  = "environment/tiles_fire.png";
 		public static final String Dreamcatcher  = "environment/custom_tiles/blue_quest.png";
+
+		public static final String BoilerQuest  = "environment/custom_tiles/candlestick_room.png";
+
 		public static final String FireQuest  = "environment/custom_tiles/fire_quest.png";
 		public static final String OilWell  = "environment/custom_tiles/oil_well.png";
 		public static final String TILES_HOLLOW  = "environment/tiles_halloween.png";
@@ -468,7 +471,7 @@ public class Assets {
 
 	public static class Splashes {
 		public static final String WARRIOR  = "splashes/warrior.jpg";
-		public static final String MAGE     = "splashes/mage.jpg";
+		public static final String MLPDBR     = "splashes/mlpd.png";
 		public static final String ROGUE    = "splashes/rogue.jpg";
 		public static final String HUNTRESS = "splashes/huntress.jpg";
 		public static final String GDX = "splashes/gdx.png";
@@ -881,6 +884,12 @@ public class Assets {
 		public static final String RED_SENTRY= "sprites/red_sentry.png";
 
 		public static final String YOW_SENTRY= "sprites/boss/yellow_star.png";
+
+
+		public static final String BUE_SENTRY= "sprites/npc/blue_star.png";
+
+		public static final String CANDLESTICK = "sprites/npc/candlestick.png";
+
 
 		public static final String SWORDLING= "Boss/swordling.png";
 		public static final String CRYSTAL_WISP= "sprites/crystal_wisp.png";
