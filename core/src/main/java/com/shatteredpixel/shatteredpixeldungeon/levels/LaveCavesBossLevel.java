@@ -129,7 +129,8 @@ public class LaveCavesBossLevel extends Level{
 
     @Override
     public void playBossMusic(){
-        Music.playModeBGM(Assets.Music.DRAGON_LING,true);
+        Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
+                () -> Music.playModeBGM(Assets.Music.DRAGON_LING,true)));
     }
 
     @Override

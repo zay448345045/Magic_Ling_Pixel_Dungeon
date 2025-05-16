@@ -72,7 +72,8 @@ public class ForestHardBossLevel extends Level {
 
     @Override
     public void playBossMusic(){
-        Music.playModeBGM(Assets.Music.BGM_BOSSA,true);
+        Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
+                () -> Music.playModeBGM(Assets.Music.BGM_BOSSA,true)));
     }
 
     {

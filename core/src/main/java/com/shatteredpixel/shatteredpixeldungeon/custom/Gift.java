@@ -37,12 +37,18 @@ public class Gift implements Bundlable {
             "TWlkVGVzdC1Db2luR2V0WCw0MDcwOTUxNzc1LGZhbHNl",
             "VG9tYi1Td2VlcGluZy1GZXN0aXZhRGF5LDE3NDQ0NzM2MDAsZmFsc2U=",
 
+
             "TUxQRC1QZWFjaEdvZCwxNzQzNjk2MDAwLGZhbHNl",
 
             "V29sdmVzR29vZEZpc2gsMTc0NzgwMDAwMCxmYWxzZQ==",
             "R29vZEdvbGRGaXNoLDE3NDc4MDAwMDAsZmFsc2U=",
             "VGhhbmtzS1BMUmVhZFBWUCwxNzQ3ODAwMDAwLGZhbHNl",
             "R29sZEZpc2gtQWxsLUtQTCwxNzQ3ODAwMDAwLGZhbHNl"
+
+            "TUxQRC1QZWFjaEdvZCwxNzQzNjk2MDAwLGZhbHNl"
+
+              
+              "123"
     };
 
     private static final HashMap<String, LinkedHashMap<String, Integer>> GIFT_ITEM ;
@@ -62,6 +68,7 @@ public class Gift implements Bundlable {
         LinkedHashMap<String, Integer> code4 = new LinkedHashMap<>();
         code4.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 500 );
         code4.put( "com.shatteredpixel.shatteredpixeldungeon.items.Ankh", 1 );
+
 
         LinkedHashMap<String, Integer> code5 = new LinkedHashMap<>();
         code5.put( "com.shatteredpixel.shatteredpixeldungeon.items.IceCyanBlueSquareCoin", 400 );
@@ -86,10 +93,12 @@ public class Gift implements Bundlable {
         code8.put( "com.shatteredpixel.shatteredpixeldungeon.items.props.LuckyGlove", 1 );
 
 
+
         tempMap.put( "QmFkTGFudGVyRmlyZS1Hbw==",             code1 );
         tempMap.put( "TWlkVGVzdC1Db2luR2V0WA==",             code2 );
         tempMap.put( "TUxQRC1QZWFjaEdvZA==",                 code3 );
         tempMap.put( "VG9tYi1Td2VlcGluZy1GZXN0aXZhRGF5",     code4 );
+
 
         tempMap.put( "V29sdmVzR29vZEZpc2g=",                    code5 );
         tempMap.put( "R29vZEdvbGRGaXNo",                        code6 );

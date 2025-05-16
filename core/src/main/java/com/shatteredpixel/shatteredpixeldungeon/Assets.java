@@ -216,7 +216,7 @@ public class Assets {
 
 		public static final String BANNERS_YX  = "interfaces/Banners/banners_yx.png";
 
-		public static final String BANNERS_LD  = "interfaces/Banners/banners_labor.png";
+
 		public static final String MENUTITLE  = "interfaces/menutitle.png";
 
 
@@ -359,7 +359,7 @@ public class Assets {
 
 		public static final String SKBJY		= "music/Boss-Saka.ogg";
 
-		public static final String TOWN 		= "music/town.ogg";
+		public static final String TOWN 		= "music/Town.ogg";
 		public static final String BGM_BOSSA 	= "music/Boss1.ogg";
 		public static final String BGM_BOSSA3 	= "music/Boss1.ogg";
 		public static final String BGM_YOU 		= "music/boss/you.ogg";
@@ -885,9 +885,11 @@ public class Assets {
 
 		public static final String YOW_SENTRY= "sprites/boss/yellow_star.png";
 
+
 		public static final String BUE_SENTRY= "sprites/npc/blue_star.png";
 
 		public static final String CANDLESTICK = "sprites/npc/candlestick.png";
+
 
 		public static final String SWORDLING= "Boss/swordling.png";
 		public static final String CRYSTAL_WISP= "sprites/crystal_wisp.png";

@@ -67,7 +67,6 @@ import java.util.ArrayList;
 
 public class vM0_7_X_Changes {
     public static void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
-        add_V0845_Changes(changeInfos);
         add_V0840_Changes(changeInfos);
         add_V0831_Changes(changeInfos);
         add_V0830_Changes(changeInfos);
@@ -110,6 +109,7 @@ public class vM0_7_X_Changes {
         add_V071_Changes(changeInfos);
         add_GYD_Changes(changeInfos);
     }
+
 
     public static void add_V0845_Changes(ArrayList<ChangeInfo> changeInfos ) {
         ChangeInfo changes = new ChangeInfo("v0.8.4.5-6", true, "");
@@ -191,6 +191,7 @@ public class vM0_7_X_Changes {
         changeInfos.add(changes);
     }
 
+
     public static void add_V0840_Changes(ArrayList<ChangeInfo> changeInfos ) {
         ChangeInfo changes = new ChangeInfo("v0.8.4.0", true, "");
         changes.hardlight(Window.TITLE_COLOR);
@@ -219,7 +220,18 @@ public class vM0_7_X_Changes {
         changeInfos.add(changes);
 
         changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
-                "Bug修复:\n\n" +
+                "Bug修复-1\n\n" +
+                        ( "_-_ 修复拟态之王0血不死亡的严重异常，优化污泥浊水判定\n" +
+                        "_-_ 修复金蝶嬗变戒指较易出现崩溃的异常\n" +
+                        "_-_ 修复烈阳法杖在元素风暴的异常，并且效果为可视怪物产生磷火+火焰\n" +
+                        "_-_ 优化在26层后，陷阱房将完全替换为深渊浮空房\n" +
+                        "_-_ 修复先前的子层掉落规则导致的异常闪退，现在调整为在子层掉落深渊的物品，将在本体楼层出现\n" +
+                        "_-_ 修复拟态怪类型的掉落规则异常，同时也同步新子层深渊物品掉落规则\n" +
+                        "_-_ 修复重型弩炮伤害异常\n" +
+                        "_-_ 修复部分UI界面优先级异常\n" +
+                        "_-_ 修复金蝶可以刷物品的异常\n" +
+                        "_-_ 狗子的免伤&听声辨位修正 烈阳法杖+术士灵魂标记"),
+                "Bug修复-2:\n\n" +
                         ("_-_ 修复拟态之王因多段伤害导致跨阶段异常\n" +
                                 "_-_ 在宝藏迷宫添加更多宝箱怪以避免无法超过5个击杀数导致游戏卡死\n" +
                                 "_-_ 生石灰固态理想试剂范围加强，在污泥挑战中商店中可被购买\n" +
@@ -234,6 +246,7 @@ public class vM0_7_X_Changes {
                                 "_-_ 修复药水鉴定徽章和卷轴鉴定徽章在迁移之后的版本后无法正常解锁\n" +
                                 "_-_ 部分缺失文案修正，部分文案优化\n" +
                                 "_-_ 修复子层的一些罕见崩溃问题")
+
         ));
 
         changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);

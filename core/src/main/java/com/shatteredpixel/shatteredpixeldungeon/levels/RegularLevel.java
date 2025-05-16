@@ -26,6 +26,7 @@ import static com.shatteredpixel.shatteredpixeldungeon.Challenges.CS;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.DHXD;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.EXSG;
 import static com.shatteredpixel.shatteredpixeldungeon.Challenges.MOREROOM;
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.anCityQuestProgress;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
@@ -75,8 +76,10 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.DragonCaveRoo
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.FayiNaRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.AutoShopRoom;
+
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.BlueAltStoneRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.BoilerRoom;
+
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.GoldRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.HealWellRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.IdenityRoom;
@@ -89,7 +92,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.PumpkinRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.RandomRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SkeletonFishRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.AquariumRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.BigEyeRoom;
@@ -235,8 +237,6 @@ public abstract class RegularLevel extends Level {
 		QMJ,
 		PQJ
     }
-
-	private boolean anCityQuestProgress = Random.NormalIntRange(1, 100)<=15;
 	
 	protected ArrayList<Room> initRooms() {
 		ArrayList<Room> initRooms = new ArrayList<>();
@@ -345,6 +345,7 @@ public abstract class RegularLevel extends Level {
 			}
 		}
 
+
 		if(Dungeon.depth<26 && Random.Int(10) == 1) {
 			initRooms.add(new EyeRoom());
 		} else if(Random.Int(10) == 1) {
@@ -352,9 +353,13 @@ public abstract class RegularLevel extends Level {
 		}
 
 
-		if(Dungeon.depth<26 && Random.NormalIntRange(1, 100)<=21){
-			initRooms.add(new SkeletonFishRoom());
-			initRooms.add(new BlueAltStoneRoom());
+//		if (Dungeon.depth >= 26 && Random.Int(10) <= 4) {
+//			initRooms.add(new BigEyeRoom());
+//			initRooms.add(new CoinRoom());
+//		} else
+
+		if(Dungeon.depth<26 && Random.Int(10) == 1) {
+			initRooms.add(new EyeRoom());
 		}
 
 		if(Dungeon.exgoldLevel()&&Dungeon.isChallenged(CS)) {
@@ -403,7 +408,7 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(new DreamcatcherRoom());
 			DragonGirlBlue.Quest.spawned = true;
 			anCityQuestProgress = true;
-        }
+		}
 
 		//Normal Shop
 		if (Dungeon.shopOnLevel() && branch == 0 && !Statistics.bossRushMode) {
@@ -531,6 +536,9 @@ public abstract class RegularLevel extends Level {
 				}
 			}
 		}
+
+
+
 
 		Random.shuffle(stdRooms);
 		Iterator<Room> stdRoomIter = stdRooms.iterator();

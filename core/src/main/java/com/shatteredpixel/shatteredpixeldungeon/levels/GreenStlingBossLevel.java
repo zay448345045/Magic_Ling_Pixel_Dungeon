@@ -15,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.tweeners.AlphaTweener;
@@ -41,7 +42,8 @@ public class GreenStlingBossLevel extends Level {
 
     @Override
     public void playBossMusic(){
-        Music.playModeBGM(Assets.Music.BGM_BOSSD,true);
+        Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f,
+                () -> Music.playModeBGM(Assets.Music.BGM_BOSSD,true)));
     }
 
     private static final int WIDTH = 15;
