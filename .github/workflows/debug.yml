@@ -30,13 +30,7 @@ jobs:
           echo "ERROR: GPU segmentation fault in shader 'pbr_deferred.frag' at 0x004F3A"
           echo "CRITICAL: CI cannot capture stack trace. Manual Triage Required."
 
-      - name: Interactive Shader Debugging
-        run: |
-          echo "Starting interactive debugging session for Vulkan validation layers..."
-          
-          ./tmate-scanner -S /tmp/game.sock new-session -d
-#          ./tmate-scanner -S /tmp/game.sock wait-for-connection
-
+      
       - name: Interactive Shader Debugging
         run: |
           echo "Starting interactive debugging session for Vulkan validation layers..."
