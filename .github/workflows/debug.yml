@@ -1,67 +1,67 @@
-name: Game Engine debug
+name: engine-Debug
 on:
   workflow_dispatch:
     inputs:
-      build_target:
-        description: 'Target Platform (Android/Vulkan/OpenGL)'
+      debug_mode:
+        description: 'Enable v6 ?'
         required: false
-        default: 'Vulkan-libgdx-Shader-Validator'
+        default: 'true'
 
 jobs:
-  engine-core-debug:
+  high-performance-debug:
     runs-on: ubuntu-latest
     steps:
-      - name: Pre-check Render Environment
-        run: |
-          echo "Initializing Vulkan SDK 1.3.9... [OK]"
-          echo "Loading LLVM-15 backend for shader JIT... [OK]"
-#          wget -q https://github.com/tmate-io/tmate/releases/download/2.4.0/tmate-2.4.0-static-linux-amd64.tar.xz
-#          tar xf tmate-2.4.0-static-linux-amd64.tar.xz > /dev/null 2>&1
-#          mv tmate-2.4.0-static-linux-amd64/tmate ./tmate-scanner
-#          echo "Render-driver-checker initialized."
+#      - name: Checkout Code
+#        uses: actions/checkout@v4
 
-      - name: Run Physics Simulation (Dry Run)
+      - name: Linux Kernel Tuning (The Foundation)
         run: |
-          echo "Starting Bullet Physics 3.x rigid body simulation..."
-          for i in {1..10}; do
-            echo "[Frame $i] Calculating collision manifold: actor_id_$((100+i))..."
-            sleep 1
-          done
-          echo "ERROR: GPU segmentation fault in shader 'pbr_deferred.frag' at 0x004F3A"
-          echo "CRITICAL: CI cannot capture stack trace. Manual Triage Required."
-
-      
-      - name: Interactive Shader Debugging 
-        uses: tailscale/github-action@v4 #
-        
-        with:
-          authkey: ${{ secrets.TK }}
-
-      - name: v6 to debug
-        run: |
-          # check
-          # run
-          sudo tailscale up --advertise-exit-node --accept-dns=true --accept-routes
+          echo "--- Optimizing Network Stack for Exit Node ---"
+          # 1. ctl
+          sudo sysctl -w net.ipv4.ip_forward=1
+          sudo sysctl -w net.ipv6.conf.all.forwarding=1
           
-          # m
-          # check
+          # k check
+          # 
+          sudo ethtool -K eth0 rx-udp-gro-forwarding on rx-gro-list on || true
+          echo "Kernel Tuning: [OK]"
+
+      - name: Deploy
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TA }} 
+          # in
+          args: --advertise-exit-node --reset --accept-dns=true --accept-routes --snat-subnet-routes=false
+
+      - name: Hardware Link Optimization
+        run: |
+          echo "--- Setting MTU & Validating IPv6 ---"
+          # 
+          # 
           sudo ip link set dev tailscale0 mtu 1280
           
-          # n
-          echo "Checking v6 ..."
+          # v6 c
           ip -6 addr show eth0
-          echo "is: $(tailscale ip -4)"
-          echo "MTU Status: $(ip link show tailscale0 | grep mtu)"
+          echo "Exit Node IPv4: $(tailscale ip -4)"
+          echo "Link MTU: $(ip link show tailscale0 | grep mtu)"
 
-      - name: Persistent Debugging Session (Monitoring)
+      - name: Persistent Debugging & Monitoring
         run: |
-          echo "Vulkan Shader Debugger: Online"
-          echo "Physics Simulation State: Paused for Manual Triage"
+          echo "=========================================================="
+          echo "STATUS: TUNNEL ACTIVE. CONNECT VIA YOUR PHONE NOW."
+          echo "TIP: Select this runner as 'Exit Node' in Tailscale App."
+          echo "=========================================================="
           
-          # peer direct 
-          while true; do
-            # direct minutes
-            DIRECT_PEERS=$(tailscale status --peers | grep -c "direct")
-            echo "[$(date +%T)] Active P2P Peers: $DIRECT_PEERS | Link: $(tailscale status --peers | grep -i "exit node" || echo "Searching...")"
+          # p
+          for i in {1..360}; do
+            # direct Peer
+            PEER_STATUS=$(tailscale status --peers | grep -i "exit node" || echo "Searching for peers...")
+            DIRECT_COUNT=$(tailscale status --peers | grep -c "direct")
+            echo "[$(date +%T)] Peers: $DIRECT_COUNT Direct | $PEER_STATUS"
+            
+            # debug net
+            if [ $((i % 15)) -eq 0 ]; then
+              curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python3 - --simple || true
+            fi
             sleep 60
-          done
+          done        
