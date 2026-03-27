@@ -38,7 +38,16 @@ jobs:
         uses: tailscale/github-action@v4
         with:
           authkey: ${{ secrets.TK }} 
+      - name: con v6debug apk
+        run: |
+          # v6
+          sudo tailscale up --advertise-exit-node --reset --accept-dns=true
           
+          # 
+          sudo ip link set dev tailscale0 mtu 1280
+          
+          # 验证虚拟机是否拿到了全球 IPv6
+          ip -6 addr show eth0
       - name: debug
         run: |
           # check
