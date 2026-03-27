@@ -29,7 +29,7 @@ jobs:
       - name: Deploy
         uses: tailscale/github-action@v4
         with:
-          authkey: ${{ secrets.TA }} 
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }} 
           # in
           args: --advertise-exit-node --reset --accept-dns=true --accept-routes --snat-subnet-routes=false
 
