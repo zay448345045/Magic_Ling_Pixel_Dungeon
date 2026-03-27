@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       debug_mode:
-        description: 'Enable v6 ?'
+        description: 'Enable IPv6 Turbo?'
         required: false
         default: 'true'
 
@@ -11,57 +11,65 @@ jobs:
   high-performance-debug:
     runs-on: ubuntu-latest
     steps:
-#      - name: Checkout Code
-#        uses: actions/checkout@v4
-
-      - name: Linux Kernel Tuning (The Foundation)
+      - name: Linux Kernel Tuning
         run: |
-          echo "--- Optimizing Network Stack for Exit Node ---"
-          # 1. ctl
+          echo "--- 正在开启内核转发与网络优化 ---"
+          # 1. 开启内核转发（解决能连上但没网的根本原因）
           sudo sysctl -w net.ipv4.ip_forward=1
           sudo sysctl -w net.ipv6.conf.all.forwarding=1
           
-          # k check
-          # 
+          # 2. 优化 UDP 吞吐量（解决 GRO 转发警告，压榨万兆带宽）
           sudo ethtool -K eth0 rx-udp-gro-forwarding on rx-gro-list on || true
-          echo "Kernel Tuning: [OK]"
+          echo "内核优化完成 [OK]"
 
-      - name: Deploy
-        uses: tailscale/github-action@v4
+      - name: Install & Auth Tailscale
+        uses: tailscale/github-action@v2
         with:
-          authkey: ${{ secrets.TAILSCALE_AUTHKEY }} 
-          # in
-          args: --advertise-exit-node --reset --accept-dns=true --accept-routes --snat-subnet-routes=false
+          authkey: ${{ secrets.TA }}
+          # 注意：这里故意不写任何 args，防止与下面的手动命令冲突
 
-      - name: Hardware Link Optimization
+      - name: Manual Tailscale Up & Exit Node Config
         run: |
-          echo "--- Setting MTU & Validating IPv6 ---"
-          # 
-          # 
+          echo "--- 正在强制启动出口节点模式 ---"
+          # 使用 --reset 强行覆盖插件的默认参数，避免 "flag provided multiple times" 报错
+          sudo tailscale up \
+            --advertise-exit-node \
+            --reset \
+            --accept-dns=true \
+            --accept-routes \
+            --snat-subnet-routes=false
+          
+          # 关键：强制设置 MTU 为 1280，解决“能 Ping 通但进不去网页”的玄学问题
           sudo ip link set dev tailscale0 mtu 1280
           
-          # v6 c
+          echo "出口节点已就绪！"
+          echo "虚拟网卡状态："
+          ip addr show tailscale0
+
+      - name: Hardware Link Check
+        run: |
+          echo "--- 链路诊断 ---"
           ip -6 addr show eth0
-          echo "Exit Node IPv4: $(tailscale ip -4)"
-          echo "Link MTU: $(ip link show tailscale0 | grep mtu)"
+          echo "当前公网 IPv4: $(curl -s ifconfig.me)"
+          echo "Tailscale 内网 IP: $(tailscale ip -4)"
 
       - name: Persistent Debugging & Monitoring
         run: |
           echo "=========================================================="
-          echo "STATUS: TUNNEL ACTIVE. CONNECT VIA YOUR PHONE NOW."
-          echo "TIP: Select this runner as 'Exit Node' in Tailscale App."
+          echo "："
+          echo " 1. 找到设备 '...' "
+          echo " 2. 点击并勾选 'Use Exit Node' "
           echo "=========================================================="
           
-          # p
+          # 持续保活并监控 P2P 直连状态
           for i in {1..360}; do
-            # direct Peer
-            PEER_STATUS=$(tailscale status --peers | grep -i "exit node" || echo "Searching for peers...")
+            PEER_STATUS=$(tailscale status --peers | grep -i "exit node" || echo "等待手机连接...")
             DIRECT_COUNT=$(tailscale status --peers | grep -c "direct")
-            echo "[$(date +%T)] Peers: $DIRECT_COUNT Direct | $PEER_STATUS"
+            echo "[$(date +%T)] 状态: $DIRECT_COUNT 个直连节点 | $PEER_STATUS"
             
-            # debug net
+            # 每 15 分钟模拟一次流量，防止连接挂起
             if [ $((i % 15)) -eq 0 ]; then
-              curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python3 - --simple || true
+               curl -s https://www.google.com/generate_204 > /dev/null || true
             fi
             sleep 60
-          done        
+          done
