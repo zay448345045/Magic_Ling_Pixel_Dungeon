@@ -27,7 +27,7 @@ jobs:
           echo "系统底层优化完成 [OK]"
 
       - name: 📦 2. 安装 Tailscale (仅安装不启动)
-        uses: tailscale/github-action@v2
+        uses: tailscale/github-action@v4
         with:
           # 只传 Key，不传任何其他参数，防止插件自作聪明提前启动
           authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
