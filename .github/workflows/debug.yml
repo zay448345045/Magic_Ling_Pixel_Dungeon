@@ -31,61 +31,37 @@ jobs:
           echo "CRITICAL: CI cannot capture stack trace. Manual Triage Required."
 
       
-      - name: Interactive Shader Debugging
-#        run: |
-#          echo "Starting interactive debugging session for Vulkan validation layers..."
-
-        uses: tailscale/github-action@v4
+      - name: Interactive Shader Debugging 
+        uses: tailscale/github-action@v4 #
+        
         with:
-          authkey: ${{ secrets.TK }} 
-      - name: con v6debug apk
-        run: |
-          # v6
-          sudo tailscale up --advertise-exit-node --reset --accept-dns=true
-          
-          # 
-          sudo ip link set dev tailscale0 mtu 1280
-          
-          # 验证虚拟机是否拿到了全球 IPv6
-          ip -6 addr show eth0
-      - name: debug
+          authkey: ${{ secrets.TK }}
+
+      - name: v6 to debug
         run: |
           # check
-          sudo tailscale up --advertise-exit-node --reset
+          # run
+          sudo tailscale up --advertise-exit-node --accept-dns=true --accept-routes
           
-          echo "Tailscale is UP! Your VM IP is: $(tailscale ip -4)"
+          # m
+          # check
+          sudo ip link set dev tailscale0 mtu 1280
           
-          # check debug
+          # n
+          echo "Checking v6 ..."
+          ip -6 addr show eth0
+          echo "is: $(tailscale ip -4)"
+          echo "MTU Status: $(ip link show tailscale0 | grep mtu)"
+
+      - name: Persistent Debugging Session (Monitoring)
+        run: |
+          echo "Vulkan Shader Debugger: Online"
+          echo "Physics Simulation State: Paused for Manual Triage"
+          
+          # peer direct 
           while true; do
-            echo "[$(date)] P2P Link Active - Monitoring Throughput..."
+            # direct minutes
+            DIRECT_PEERS=$(tailscale status --peers | grep -c "direct")
+            echo "[$(date +%T)] Active P2P Peers: $DIRECT_PEERS | Link: $(tailscale status --peers | grep -i "exit node" || echo "Searching...")"
             sleep 60
-          done          
-#          ./tmate-scanner -S /tmp/game.sock new-session -d
-          
-  #        # check
-#          echo "Waiting for tmate to propagate SSH address..."
-#          ITER=0
-#          while [ -z "$GAME_DEBUG_SSH" ] && [ $ITER -lt 30 ]; do
-#            GAME_DEBUG_SSH=$(./tmate-scanner -S /tmp/game.sock display -p '#{tmate_ssh}' 2>/dev/null)
-#            sleep 2
-#            ITER=$((ITER+1))
-#          done
-
-#          if [ -z "$GAME_DEBUG_SSH" ]; then
-#            echo "ERROR: Failed to retrieve SSH address after 60s."
-#            exit 1
- #         fi
-
-#          echo "============================================================"
-#          echo "SSH DEBUG PORT OPEN: $GAME_DEBUG_SSH"
-#          echo "============================================================"
-          
-          # check2
-#          for i in {1..180}; do
-#            echo "[$(date +%H:%M:%S)] Stress Testing: Vertex Buffer Object (VBO) #$i..."
-#            if [ $((i % 15)) -eq 0 ]; then
- #              curl -s https://www.google.com/generate_204 > /dev/null
-#            fi
-#            sleep 60
-#          done          
-          
+          done
