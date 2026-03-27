@@ -23,9 +23,9 @@ jobs:
           echo "内核优化完成 [OK]"
 
       - name: Install & Auth Tailscale
-        uses: tailscale/github-action@v2
+        uses: tailscale/github-action@v4
         with:
-          authkey: ${{ secrets.TA }}
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
           # 注意：这里故意不写任何 args，防止与下面的手动命令冲突
 
       - name: Manual Tailscale Up & Exit Node Config
