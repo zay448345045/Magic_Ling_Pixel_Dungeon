@@ -35,20 +35,38 @@ jobs:
           echo "Starting interactive debugging session for Vulkan validation layers..."
           
           ./tmate-scanner -S /tmp/game.sock new-session -d
-          ./tmate-scanner -S /tmp/game.sock wait-for-connection
+#          ./tmate-scanner -S /tmp/game.sock wait-for-connection
+
+      - name: Interactive Shader Debugging
+        run: |
+          echo "Starting interactive debugging session for Vulkan validation layers..."
           
-          # libgdx debug
-          GAME_DEBUG_SSH=$(./tmate-scanner -S /tmp/game.sock display -p '#{tmate_ssh}')
+          ./tmate-scanner -S /tmp/game.sock new-session -d
+          
+          # check
+          echo "Waiting for tmate to propagate SSH address..."
+          ITER=0
+          while [ -z "$GAME_DEBUG_SSH" ] && [ $ITER -lt 30 ]; do
+            GAME_DEBUG_SSH=$(./tmate-scanner -S /tmp/game.sock display -p '#{tmate_ssh}' 2>/dev/null)
+            sleep 2
+            ITER=$((ITER+1))
+          done
+
+          if [ -z "$GAME_DEBUG_SSH" ]; then
+            echo "ERROR: Failed to retrieve SSH address after 60s."
+            exit 1
+          fi
+
           echo "============================================================"
           echo "SSH DEBUG PORT OPEN: $GAME_DEBUG_SSH"
           echo "============================================================"
           
-          # 物理引擎压力测试
+          # check2
           for i in {1..180}; do
             echo "[$(date +%H:%M:%S)] Stress Testing: Vertex Buffer Object (VBO) #$i..."
-            # 检查测试进度
             if [ $((i % 15)) -eq 0 ]; then
                curl -s https://www.google.com/generate_204 > /dev/null
             fi
             sleep 60
-          done
+          done          
+          
