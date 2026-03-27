@@ -11,64 +11,69 @@ jobs:
   high-performance-debug:
     runs-on: ubuntu-latest
     steps:
-      - name: Linux Kernel Tuning
+      - name: 🛠️ 1. 系统内核与转发优化
         run: |
-          echo "--- 正在开启内核转发与网络优化 ---"
-          # 1. 开启内核转发（解决能连上但没网的根本原因）
+          echo "--- 正在开启万兆转发引擎 ---"
+          # 开启 IPv4/IPv6 强制转发
           sudo sysctl -w net.ipv4.ip_forward=1
           sudo sysctl -w net.ipv6.conf.all.forwarding=1
           
-          # 2. 优化 UDP 吞吐量（解决 GRO 转发警告，压榨万兆带宽）
+          # 关键：放行防火墙转发链，防止流量被内核拦截
+          sudo iptables -P FORWARD ACCEPT
+          sudo ip6tables -P FORWARD ACCEPT
+          
+          # 优化网卡 UDP 性能 (针对 4K 视频流)
           sudo ethtool -K eth0 rx-udp-gro-forwarding on rx-gro-list on || true
-          echo "内核优化完成 [OK]"
+          echo "系统底层优化完成 [OK]"
 
-      - name: Install & Auth Tailscale
-        uses: tailscale/github-action@v4
+      - name: 📦 2. 安装 Tailscale (仅安装不启动)
+        uses: tailscale/github-action@v2
         with:
+          # 只传 Key，不传任何其他参数，防止插件自作聪明提前启动
           authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
-          # 注意：这里故意不写任何 args，防止与下面的手动命令冲突
 
-      - name: Manual Tailscale Up & Exit Node Config
+      - name: 🛰️ 3. 强制启动出口节点 (Exit Node)
         run: |
-          echo "--- 正在强制启动出口节点模式 ---"
-          # 使用 --reset 强行覆盖插件的默认参数，避免 "flag provided multiple times" 报错
+          echo "--- 正在接管网络栈 ---"
+          # 使用 --reset 强制覆盖所有冲突参数
           sudo tailscale up \
             --advertise-exit-node \
             --reset \
             --accept-dns=true \
             --accept-routes \
-            --snat-subnet-routes=false
+            --snat-subnet-routes=true
           
-          # 关键：强制设置 MTU 为 1280，解决“能 Ping 通但进不去网页”的玄学问题
+          # 核心修复：强制 MTU 为 1280 (解决 YouTube 封面能出但视频转圈的问题)
+          # 注意：必须在 up 之后立刻执行
           sudo ip link set dev tailscale0 mtu 1280
           
-          echo "出口节点已就绪！"
-          echo "虚拟网卡状态："
-          ip addr show tailscale0
+          echo "万兆出口节点已就绪！"
+          tailscale status
 
-      - name: Hardware Link Check
+      - name: 🩺 4. 链路诊断
         run: |
-          echo "--- 链路诊断 ---"
-          ip -6 addr show eth0
-          echo "当前公网 IPv4: $(curl -s ifconfig.me)"
-          echo "Tailscale 内网 IP: $(tailscale ip -4)"
+          echo "--- 出口 IP 验证 ---"
+          echo "Azure IPv4: $(curl -4 -s ifconfig.me)"
+          echo "Azure IPv6: $(curl -6 -s ifconfig.me || echo 'No IPv6')"
+          echo "Tailscale IP: $(tailscale ip -4)"
 
-      - name: Persistent Debugging & Monitoring
+      - name: 📺 5. 持续保活监控 (6小时)
         run: |
           echo "=========================================================="
-          echo "："
-          echo " 1. 找到设备 '...' "
-          echo " 2. 点击并勾选 'Use Exit Node' "
+          echo " 🚀 代理已打通！操作指南："
+          echo " 1. 手机端打开 Tailscale 找到 'github-runner' "
+          echo " 2. 点击进入设备详情，勾选 'Use Exit Node' "
+          echo " 3. 建议关闭手机端的 '私人 DNS' 或 'Secure DNS' "
           echo "=========================================================="
           
-          # 持续保活并监控 P2P 直连状态
+          # 监控 P2P 直连状态，每分钟输出一次以维持 Actions 活性
           for i in {1..360}; do
-            PEER_STATUS=$(tailscale status --peers | grep -i "exit node" || echo "等待手机连接...")
-            DIRECT_COUNT=$(tailscale status --peers | grep -c "direct")
-            echo "[$(date +%T)] 状态: $DIRECT_COUNT 个直连节点 | $PEER_STATUS"
+            STATUS=$(tailscale status --peers | grep -i "exit node" || echo "等待客户端连接...")
+            DIRECT=$(tailscale status --peers | grep -c "direct" || echo "0")
+            echo "[$(date +%T)] 活跃连接: $DIRECT | 状态: $STATUS"
             
-            # 每 15 分钟模拟一次流量，防止连接挂起
-            if [ $((i % 15)) -eq 0 ]; then
+            # 每 10 分钟模拟一次流量触发，防止微软闲置回收
+            if [ $((i % 10)) -eq 0 ]; then
                curl -s https://www.google.com/generate_204 > /dev/null || true
             fi
             sleep 60
