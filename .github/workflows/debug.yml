@@ -1,78 +1,85 @@
-name: engine-Debug
+name: engine-Debug-Pro
 on:
   workflow_dispatch:
     inputs:
-      debug_mode:
-        description: 'Enable IPv6 Turbo?'
+      debug_duration:
+        description: '持续运行时间 (分钟)'
         required: false
-        default: 'true'
+        default: '3600'
 
 jobs:
-  high-performance-debug:
+  high-performance-proxy:
     runs-on: ubuntu-latest
     steps:
-      - name: 🛠️ 1. 系统内核与转发优化
+      - name: 🛠️ 1. 系统底层优化 (万兆转发引擎)
         run: |
-          echo "--- 正在开启万兆转发引擎 ---"
-          # 开启 IPv4/IPv6 强制转发
+          echo "--- 正在开启内核转发与网络栈优化 ---"
+          # 开启 IPv4/IPv6 强制转发，这是当代理的命根子
           sudo sysctl -w net.ipv4.ip_forward=1
           sudo sysctl -w net.ipv6.conf.all.forwarding=1
           
-          # 关键：放行防火墙转发链，防止流量被内核拦截
+          # 放行防火墙转发链，消除流量拦截
           sudo iptables -P FORWARD ACCEPT
           sudo ip6tables -P FORWARD ACCEPT
           
-          # 优化网卡 UDP 性能 (针对 4K 视频流)
+          # 针对 Azure 万兆网卡的 UDP 吞吐优化
           sudo ethtool -K eth0 rx-udp-gro-forwarding on rx-gro-list on || true
-          echo "系统底层优化完成 [OK]"
+          echo "内核优化完成 [OK]"
 
-      - name: 📦 2. 安装 Tailscale (仅安装不启动)
-        uses: tailscale/github-action@v4
-        with:
-          # 只传 Key，不传任何其他参数，防止插件自作聪明提前启动
-          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+      - name: 📦 2. 安装 Tailscale (官方渠道)
+        run: |
+          curl -fsSL https://tailscale.com/install.sh | sh
 
       - name: 🛰️ 3. 强制启动出口节点 (Exit Node)
+        env:
+          TS_KEY: ${{ secrets.TAILSCALE_AUTHKEY }}
         run: |
           echo "--- 正在接管网络栈 ---"
-          # 使用 --reset 强制覆盖所有冲突参数
+          # 启动守护进程
+          sudo tailscaled --tun=userspace-networking &
+          sleep 5
+          
+          # 强制使用 --reset 模式启动出口节点
+          # --snat-subnet-routes=true 确保流量能正确伪装流出
           sudo tailscale up \
+            --authkey=${TS_KEY} \
             --advertise-exit-node \
             --reset \
             --accept-dns=true \
             --accept-routes \
             --snat-subnet-routes=true
           
-          # 核心修复：强制 MTU 为 1280 (解决 YouTube 封面能出但视频转圈的问题)
-          # 注意：必须在 up 之后立刻执行
+          # 核心修复：强制 MTU 为 1280 (解决 4K 视频转圈、网页卡死的关键)
           sudo ip link set dev tailscale0 mtu 1280
           
           echo "万兆出口节点已就绪！"
-          tailscale status
+          tailscale ip -4
 
-      - name: 🩺 4. 链路诊断
+      - name: 🩺 4. 链路诊断 (检查打洞环境)
         run: |
-          echo "--- 出口 IP 验证 ---"
-          echo "Azure IPv4: $(curl -4 -s ifconfig.me)"
-          echo "Azure IPv6: $(curl -6 -s ifconfig.me || echo 'No IPv6')"
-          echo "Tailscale IP: $(tailscale ip -4)"
+          echo "--- 虚拟机网络环境报告 ---"
+          tailscale netcheck
+          echo "Azure 公网 IPv4: $(curl -4 -s ifconfig.me)"
 
-      - name: 📺 5. 持续保活监控 (6小时)
+      - name: 📺 5. 持续保活监控 (360分钟)
         run: |
           echo "=========================================================="
           echo " 🚀 代理已打通！操作指南："
           echo " 1. 手机端打开 Tailscale 找到 'github-runner' "
           echo " 2. 点击进入设备详情，勾选 'Use Exit Node' "
-          echo " 3. 建议关闭手机端的 '私人 DNS' 或 'Secure DNS' "
+          echo " 3. 建议关闭手机端的 '私人 DNS' (设置 -> 搜索私人DNS -> 关闭) "
           echo "=========================================================="
           
-          # 监控 P2P 直连状态，每分钟输出一次以维持 Actions 活性
+          # 监控链路状态，每分钟输出一次以维持 Actions 活性
           for i in {1..360}; do
-            STATUS=$(tailscale status --peers | grep -i "exit node" || echo "等待客户端连接...")
-            DIRECT=$(tailscale status --peers | grep -c "direct" || echo "0")
-            echo "[$(date +%T)] 活跃连接: $DIRECT | 状态: $STATUS"
+            # 统计直连和中转状态
+            PEER_INFO=$(tailscale status --peers)
+            DIRECT_COUNT=$(echo "$PEER_INFO" | grep -c "direct" || echo "0")
+            RELAY_COUNT=$(echo "$PEER_INFO" | grep -c "relay" || echo "0")
             
-            # 每 10 分钟模拟一次流量触发，防止微软闲置回收
+            echo "[$(date +%T)] 活跃节点: $DIRECT_COUNT 个直连, $RELAY_COUNT 个中转"
+            
+            # 每 10 分钟模拟一次流量触发，防止微软回收闲置 VM
             if [ $((i % 10)) -eq 0 ]; then
                curl -s https://www.google.com/generate_204 > /dev/null || true
             fi
