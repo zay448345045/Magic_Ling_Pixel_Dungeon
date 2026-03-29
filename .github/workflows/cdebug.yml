@@ -1,0 +1,23 @@
+name: Conditional Debug
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 启用 tmate 调试
+        required: false
+        default: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+#      - uses: actions/checkout@v4
+      # 仅手动触发且 debug_enabled=true 时开启
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+#        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+#        with:
+#          limit-access-to-actor: true
+      # 其他构建步骤...
